@@ -3,10 +3,8 @@
 import { Player } from "@remotion/player";
 import type { NextPage } from "next";
 import React, { useMemo, useState } from "react";
-import { Main } from "../remotion/MyComp/Main";
+import { Slideshow } from "../remotion/ImageSlideshow/Slideshow";
 import {
-  CompositionProps,
-  defaultMyCompProps,
   DURATION_IN_FRAMES,
   VIDEO_FPS,
   VIDEO_HEIGHT,
@@ -16,6 +14,7 @@ import { z } from "zod";
 import { RenderControls } from "../components/RenderControls";
 import { Tips } from "../components/Tips/Tips";
 import { Spacing } from "../components/Spacing";
+import { SlideshowProps, defaultSlideshowProps } from "../types/slideshowTypes";
 
 const container: React.CSSProperties = {
   maxWidth: 768,
@@ -36,10 +35,11 @@ const player: React.CSSProperties = {
 };
 
 const Home: NextPage = () => {
-  const [text, setText] = useState<string>(defaultMyCompProps.title);
+  const [text, setText] = useState<string>(defaultSlideshowProps.title || "");
 
-  const inputProps: z.infer<typeof CompositionProps> = useMemo(() => {
+  const inputProps: z.infer<typeof SlideshowProps> = useMemo(() => {
     return {
+      ...defaultSlideshowProps,
       title: text,
     };
   }, [text]);
@@ -49,7 +49,7 @@ const Home: NextPage = () => {
       <div style={container}>
         <div className="cinematics" style={outer}>
           <Player
-            component={Main}
+            component={Slideshow}
             inputProps={inputProps}
             durationInFrames={DURATION_IN_FRAMES}
             fps={VIDEO_FPS}
@@ -59,12 +59,13 @@ const Home: NextPage = () => {
             controls
             autoPlay
             loop
+            acknowledgeRemotionLicense
           />
         </div>
         <RenderControls
           text={text}
           setText={setText}
-          inputProps={inputProps}
+          inputProps={{ title: text }}
         ></RenderControls>
         <Spacing></Spacing>
         <Spacing></Spacing>
