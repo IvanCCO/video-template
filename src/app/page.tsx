@@ -4,7 +4,7 @@ import { Player } from "@remotion/player";
 import type { NextPage } from "next";
 import React, { useMemo, useState } from "react";
 import { Slideshow as ImageSlideshow } from "../remotion/ImageSlideshow/Slideshow";
-import { Slideshow as ImageSlideshowTest } from "../remotion/ImageSlideshowTest/Slideshow";
+import { PhylosoficalEdit as ImageSlideshowTest } from "../remotion/PhylosoficalMessage/PhylosoficalEdit";
 
 import {
   VIDEO_FPS,

@@ -203,7 +203,7 @@ const InnerSlideshow: React.FC<InternalSlideshowProps> = ({ images, song, quotes
 };
 
 // Main Slideshow component that accepts props defined in slideshowTypes.ts
-export const Slideshow: React.FC<z.infer<typeof ExternalSlideshowProps>> = (props) => {
+export const PhylosoficalEdit: React.FC<z.infer<typeof ExternalSlideshowProps>> = (props) => {
   const quotes = [
     {
       text: props.title || 'An inspiring quote goes here',

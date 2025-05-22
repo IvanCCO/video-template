@@ -1,6 +1,6 @@
 import {Composition} from 'remotion';
 import { Main as ImageSlideshowMain } from './remotion/ImageSlideshow/Main';
-import { Main as ImageSlideshowTestMain } from './remotion/ImageSlideshowTest/Main';
+import { Main as ImageSlideshowTestMain } from './remotion/PhylosoficalMessage/Main';
 import { SlideshowProps, defaultSlideshowProps, defaultSlideshowPropsTest } from './types/slideshowTypes';
 import { VIDEO_FPS, VIDEO_HEIGHT, VIDEO_WIDTH } from './types/constants';
 
