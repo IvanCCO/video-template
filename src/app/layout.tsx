@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" suppressHydrationWarning={true} data-lt-installed="true">
+      <body cz-shortcut-listen="true">{children}</body>
     </html>
   );
 }

@@ -13,6 +13,7 @@ import {
 } from 'remotion';
 import { z } from 'zod';
 import { SlideshowProps as ExternalSlideshowProps } from '../../types/slideshowTypes';
+import { VIDEO_FPS } from '../../types/constants';
 
 // Define the props for our subtitles
 interface SubtitleProps {
@@ -132,7 +133,10 @@ const ImageWithTransition: React.FC<{ src: string }> = ({ src }) => {
 // Inner Slideshow component with the actual implementation
 const InnerSlideshow: React.FC<InternalSlideshowProps> = ({ images, song, subtitles }) => {
   const { fps } = useVideoConfig();
-  const frameDurationPerImage = (5 * fps); 
+  // Set duration for ImageSlideshowTest to fit within 10 seconds total
+  // For one image, it will be 10 seconds. For multiple images, we divide evenly.
+  const totalFrames = 10 * VIDEO_FPS; // 10 seconds total
+  const frameDurationPerImage = Math.floor(totalFrames / Math.max(1, images.length));
 
   return (
     <AbsoluteFill style={{ backgroundColor: 'black' }}>
@@ -167,16 +171,17 @@ const InnerSlideshow: React.FC<InternalSlideshowProps> = ({ images, song, subtit
 
 // Main Slideshow component that accepts props defined in slideshowTypes.ts
 export const Slideshow: React.FC<z.infer<typeof ExternalSlideshowProps>> = (props) => {
+  const { fps } = useVideoConfig();
   const hardcodedSubtitles = [
     {
-      text: props.title || 'Welcome to the Test Slideshow', // Differentiated title
+      text: props.title || 'Welcome to the Test Slideshow',
       startFrame: 0,
-      endFrame: 90, 
+      endFrame: 5 * VIDEO_FPS,
     },
     {
       text: 'Test Version with Remotion',
-      startFrame: 91,
-      endFrame: 180, 
+      startFrame: 5 * VIDEO_FPS + 1,
+      endFrame: 10 * VIDEO_FPS,
     },
   ];
 

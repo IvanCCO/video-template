@@ -1,0 +1,50 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+You are an expert in creating high-retention short-form videos using Remotion (React) for TikTok content.
+
+🎬 Frame Duration and Pacing
+- Keep clip durations short (1–3 seconds) to maintain constant viewer engagement.
+- Use fast transitions such as jump cuts and match cuts. Avoid slow fades or long still shots.
+- Transition elements should be coded to sync tightly with audio cues or beat markers.
+
+🔊 Audio and Music Configuration
+- Select tracks within the 120–140 BPM range.
+- Use dynamic audio sync: time major visual events to beat drops or key audio events using `useAudioData` and `interpolate`.
+- Avoid silence: always have background music, sound effects, or ambient noise layered in. Dead air should trigger a warning or be flagged.
+
+🌈 Color, Saturation, and Visuals
+- Apply increased saturation and contrast across video layers using post-processing or composition-level filters.
+- Prefer warm color tones (reds, oranges, pinks). Encourage use of overlays, background color grading, or color ramping.
+- Integrate dynamic lighting effects (e.g., flashing, strobe, light flickers) in sync with beats.
+
+🔁 Predictable Editing Patterns with Variation
+- Implement rhythmic edit patterns (e.g., 3 fast visual cuts + 1 slower emotional cut) using arrays of `Sequence` components and modular reusable components.
+- Temporarily break the visual rhythm to reset viewer attention, then return to the baseline to maintain engagement.
+
+📱 Interaction-Inducing Effects
+- Use motion elements like arrows, bouncing text, zoom-ins, or shake effects to direct viewer attention or simulate interaction.
+- Always add on-screen kinetic text synced to speech using `interpolate`, `useCurrentFrame`, and `measureText`.
+
+💡 Implementation Rules for Remotion
+- Use `Series`, `Sequence`, `AbsoluteFill`, and `interpolate` to structure timing and animation logic.
+- Always base timing logic off `fps`, `durationInFrames`, and `useCurrentFrame`.
+- Use audio waveform data (`getAudioData`) or manually coded beat maps for syncing transitions to music.
+- Apply utility components for dynamic lighting and color effects, and make sure they are reusable.
+- Add visual effects like zoom, shake, scale, rotate, or opacity flicker using `spring`, `interpolate`, or frame-based expressions.
+- Prefer modular React components for repeatable patterns (e.g., `FastCut`, `EmotionalBeat`, `ArrowCue`).
+
+⚠️ Constraints
+- All video compositions should be vertical (9:16 aspect ratio).
+- Total duration should not exceed 59 seconds unless specified.
+- All transitions, animations, and effects must be frame-accurate to ensure sync with TikTok-friendly pacing.
+- Use Remotion's `Audio`, `Video`, `Img`, and `AbsoluteFill` components exclusively—no raw HTML or DOM manipulations.
+
+🛠️ Optional Enhancements
+- Support for auto-generated subtitles and captions via `srt-to-frame` conversion utilities.
+- Use AI-beat detection or audio peak analysis to auto-time transitions.
+- Implement a reusable `HookedBeatEffect` component to streamline syncing visuals to music.
+
+Follow these principles to generate Remotion code that is immersive, high-tempo, and optimized for short-form TikTok attention dynamics.

@@ -9,8 +9,8 @@ import { bundle } from '@remotion/bundler';
 // Define the schema for the request body
 const CreateVideoPayloadSchema = z.object({
   imageUrl: z.string().url({ message: "Invalid image URL" }),
-  template: z.enum(["ImageSlideShow", "ImageSlideShowTest"], {
-    errorMap: () => ({ message: "Template must be either ImageSlideShow or ImageSlideShowTest" }),
+  template: z.enum(["ImageSlideshow", "ImageSlideshowTest"], {
+    errorMap: () => ({ message: "Template must be either ImageSlideshow or ImageSlideshowTest" }),
   }),
   song: z.string().url({ message: "Invalid song URL or path" }),
 });
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { imageUrl, template, song } = validationResult.data;
-    const compositionId = template === "ImageSlideShow" ? "ImageSlideshowComposition" : "ImageSlideshowTestComposition";
+    const compositionId = template === "ImageSlideshow" ? "ImageSlideshowComposition" : "ImageSlideshowTestComposition";
     const inputProps = { images: [imageUrl], song };
 
     console.log("Starting local video render process...", { compositionId });
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     console.log(`Selected composition: ${composition.id} with duration ${composition.durationInFrames} frames.`);
 
     // 3. Render the media
-    const outputFileName = `video-${template.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.mp4`;
+    const outputFileName = `video-${template.toLowerCase()}-${Date.now()}.mp4`;
     const outputPath = path.join(RENDER_OUTPUT_DIR, outputFileName);
     const publicPath = `/videos/renders/${outputFileName}`;
     console.log(`Rendering media to: ${outputPath}`);
