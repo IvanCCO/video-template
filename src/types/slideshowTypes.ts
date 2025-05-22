@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const SlideshowProps = z.object({
   title: z.string().optional(),
+  author: z.string().optional(),
   images: z.array(z.string().url()).min(1, "At least one image URL is required"),
   song: z.string().url("Song must be a valid URL or resolvable path"), // Or z.string() if it's a local path processed by staticFile
 });
@@ -14,6 +15,7 @@ export const defaultSlideshowProps: z.infer<typeof SlideshowProps> = {
 
 export const defaultSlideshowPropsTest: z.infer<typeof SlideshowProps> = {
   title: 'Image Slideshow Test',
+  author: 'John Doe',
   images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTecu1iFWp9yiLGbI_9l2u_HqkQYe0zlkq2Nw&s'], 
   song: 'https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3',
 };

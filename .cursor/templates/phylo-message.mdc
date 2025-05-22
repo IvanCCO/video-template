@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Elements of the video
+
+- Duration: 10 seconds
+
+Background layer — Apply a Gaussian blur, lower the brightness slightly, and stretch it to fill the screen.
+
+Foreground layer — Place the clear, unblurred version centered with soft shadows and a subtle border glow to give it a 3D "cutout" effect.
+
+Overlay a centered quote in a clean, readable serif font (e.g., Georgia or Garamond). Use white text with a soft black shadow for contrast.
+
+Start the video with a fade-in
+End the video with a fade-out and a silent pause of 1 second.

@@ -4,7 +4,6 @@ import {
   Audio,
   Img,
   Sequence,
-  Series,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
@@ -15,27 +14,33 @@ import { z } from 'zod';
 import { SlideshowProps as ExternalSlideshowProps } from '../../types/slideshowTypes';
 import { VIDEO_FPS } from '../../types/constants';
 
-// Define the props for our subtitles
-interface SubtitleProps {
+
+const CONFIGURATION = {
+  opacityFrames: 100,
+}
+
+// Define the props for our quote text
+interface QuoteProps {
   text: string;
+  author?: string;
 }
 
 // Props for our inner Slideshow component
 interface InternalSlideshowProps {
   images: string[];
   song: string;
-  subtitles: Array<{ text: string; startFrame: number; endFrame: number }>; 
+  quotes: Array<{ text: string; author?: string; startFrame: number; endFrame: number }>;
 }
 
-// Subtitle component
-const Subtitle: React.FC<SubtitleProps> = ({ text }) => {
+// Quote component with serif font
+const Quote: React.FC<QuoteProps> = ({ text, author }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { durationInFrames } = useVideoConfig();
 
-  // Animation for the subtitle
+  // Animation for the quote - fade in at start, stay visible until the end
   const opacity = interpolate(
     frame,
-    [0, 10, 30, 40],
+    [0, CONFIGURATION.opacityFrames, durationInFrames - 30, durationInFrames],
     [0, 1, 1, 0],
     {
       extrapolateLeft: 'clamp',
@@ -47,50 +52,69 @@ const Subtitle: React.FC<SubtitleProps> = ({ text }) => {
     <div
       style={{
         position: 'absolute',
-        bottom: 80,
-        width: '100%',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '85%',
         textAlign: 'center',
       }}
     >
       <div
         style={{
-          background: 'rgba(0, 0, 0, 0.6)',
           color: 'white',
-          padding: '10px 20px',
-          borderRadius: 10,
-          display: 'inline-block',
-          fontFamily: 'Inter, sans-serif',
-          fontSize: 36,
-          fontWeight: 'bold',
+          fontFamily: 'Georgia, serif',
+          fontSize: 54,
+          fontWeight: '800',
+          lineHeight: 1.4,
+          textShadow: '0 4px 8px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6)',
           opacity,
+          WebkitTextStroke: '1.5px black',
+          letterSpacing: '0.5px',
+          whiteSpace: 'wrap',
+          wordWrap: 'break-word',
         }}
       >
         {text}
       </div>
+      {author && (
+        <div
+          style={{
+            color: 'white',
+            fontFamily: 'Georgia, serif',
+            fontSize: 36,
+            fontWeight: '500',
+            opacity,
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)',
+            marginTop: 40,
+            fontStyle: 'italic',
+          }}
+        >
+          - {author}
+        </div>
+      )}
     </div>
   );
 };
 
-// Image component with fade-in/fade-out effect
-const ImageWithTransition: React.FC<{ src: string }> = ({ src }) => {
+// Image component with background and foreground layers
+const ImageWithLayers: React.FC<{ src: string }> = ({ src }) => {
   const frame = useCurrentFrame();
   const { durationInFrames, fps } = useVideoConfig();
 
-  // Create a spring animation for the scale
-  const scale = spring({
+  // Calculate blur amount - starting with full blur and reducing to 0 at 2 seconds
+  const blurAmount = interpolate(
     frame,
-    fps,
-    config: {
-      mass: 1,
-      damping: 200,
-    },
-    durationInFrames: durationInFrames,
-  });
+    [0, 2 * fps],
+    [20, 0],
+    {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    }
+  );
 
-  // Create fade in/out effect
   const opacity = interpolate(
     frame,
-    [0, 15, durationInFrames - 15, durationInFrames],
+    [0, CONFIGURATION.opacityFrames, durationInFrames - 30, durationInFrames],
     [0, 1, 1, 0],
     {
       extrapolateLeft: 'clamp',
@@ -98,92 +122,96 @@ const ImageWithTransition: React.FC<{ src: string }> = ({ src }) => {
     }
   );
 
-  // Subtle zoom effect
-  const zoom = interpolate(
-    frame,
-    [0, durationInFrames],
-    [1, 1.05],
-    {
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
-    }
-  );
-
   return (
-    <AbsoluteFill
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        opacity,
-      }}
-    >
-      <Img
-        src={src.startsWith('http') ? src : staticFile(src)}
-        style={{
+    <AbsoluteFill style={{ opacity }}>
+      {/* Background layer - blurred and darkened */}
+      <AbsoluteFill>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           width: '100%',
           height: '100%',
-          objectFit: 'cover',
-          transform: `scale(${zoom})`,
-        }}
-      />
+          position: 'relative',
+        }}>
+          <Img
+            src={src.startsWith('http') ? src : staticFile(src)}
+            style={{
+              width: '100%',
+              height: '60%',
+              objectFit: 'cover',
+              filter: `blur(${blurAmount}px) brightness(0.7) saturate(1.5)`, // Dynamic blur
+            }}
+          />
+          {/* Vignette effect overlay */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'radial-gradient(circle, transparent 10%, rgba(0,0,0,0.9) 100%)',
+              pointerEvents: 'none',
+            }}
+          />
+        </div>
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
 
-// Inner Slideshow component with the actual implementation
-const InnerSlideshow: React.FC<InternalSlideshowProps> = ({ images, song, subtitles }) => {
-  const { fps } = useVideoConfig();
-  // Set duration for ImageSlideshowTest to fit within 10 seconds total
-  // For one image, it will be 10 seconds. For multiple images, we divide evenly.
-  const totalFrames = 10 * VIDEO_FPS; // 10 seconds total
-  const frameDurationPerImage = Math.floor(totalFrames / Math.max(1, images.length));
+const InnerSlideshow: React.FC<InternalSlideshowProps> = ({ images, song, quotes }) => {
+  // Fixed duration of 10 seconds as per requirements
+  const totalFrames = 10 * VIDEO_FPS;
+  const silentPauseFrames = 1 * VIDEO_FPS; // 1 second silent pause at the end
+  const contentFrames = totalFrames - silentPauseFrames;
+
+  const mainImage = images[0];
 
   return (
     <AbsoluteFill style={{ backgroundColor: 'black' }}>
-      {/* Background music */}
-      <Audio src={song.startsWith('http') ? song : staticFile(song)} />
+      {/* Background music - ends 1 second before video ends */}
+      <Audio
+        src={song.startsWith('http') ? song : staticFile(song)}
+        endAt={contentFrames}
+        volume={0.7}
+      />
 
-      {/* Images shown in series */}
-      <Series>
-        {images.map((imageSrc, index) => (
-          <Series.Sequence
-            key={index}
-            durationInFrames={frameDurationPerImage}
-          >
-            <ImageWithTransition src={imageSrc} />
-          </Series.Sequence>
-        ))}
-      </Series>
+      {/* Main image with layers */}
+      <Sequence durationInFrames={contentFrames}>
+        <ImageWithLayers src={mainImage} />
+      </Sequence>
 
-      {/* Subtitles */}
-      {subtitles.map((subtitle, index) => (
+      {/* Quotes */}
+      {quotes.map((quote, index) => (
         <Sequence
           key={index}
-          from={subtitle.startFrame}
-          durationInFrames={subtitle.endFrame - subtitle.startFrame}
+          from={quote.startFrame}
+          durationInFrames={quote.endFrame - quote.startFrame}
         >
-          <Subtitle text={subtitle.text} />
+          <Quote text={quote.text} author={quote.author} />
         </Sequence>
       ))}
+
+      {/* Silent pause at the end */}
+      <Sequence from={contentFrames} durationInFrames={silentPauseFrames}>
+        <AbsoluteFill style={{ backgroundColor: 'black' }} />
+      </Sequence>
     </AbsoluteFill>
   );
 };
 
 // Main Slideshow component that accepts props defined in slideshowTypes.ts
 export const Slideshow: React.FC<z.infer<typeof ExternalSlideshowProps>> = (props) => {
-  const { fps } = useVideoConfig();
-  const hardcodedSubtitles = [
+  const quotes = [
     {
-      text: props.title || 'Welcome to the Test Slideshow',
+      text: props.title || 'An inspiring quote goes here',
+      author: props.author,
       startFrame: 0,
-      endFrame: 5 * VIDEO_FPS,
-    },
-    {
-      text: 'Test Version with Remotion',
-      startFrame: 5 * VIDEO_FPS + 1,
-      endFrame: 10 * VIDEO_FPS,
+      endFrame: 10 * VIDEO_FPS, // Stay for the entire video duration
     },
   ];
 
-  return <InnerSlideshow images={props.images} song={props.song} subtitles={hardcodedSubtitles} />;
+  return <InnerSlideshow images={props.images} song={props.song} quotes={quotes} />;
 }; 
