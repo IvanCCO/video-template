@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { VIDEO_FPS } from './constants';
 
 export const SlideshowProps = z.object({
   title: z.string().optional(),
@@ -13,12 +14,4 @@ export const defaultSlideshowProps: z.infer<typeof SlideshowProps> = {
   song: 'https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3',
 };
 
-export const defaultSlideshowPropsTest: z.infer<typeof SlideshowProps> = {
-  title: 'Image Slideshow Test',
-  author: 'John Doe',
-  images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTecu1iFWp9yiLGbI_9l2u_HqkQYe0zlkq2Nw&s'], 
-  song: 'https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3',
-};
-
-export const SLIDESHOW_DURATION_IN_FRAMES = 150;
-export const SLIDESHOW_DURATION_IN_FRAMES_TEST = 1500;
+export const SLIDESHOW_DURATION_IN_FRAMES = 20 * VIDEO_FPS;

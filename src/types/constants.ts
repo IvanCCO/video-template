@@ -1,6 +1,11 @@
 import { z } from "zod";
 export const COMP_NAME = "MyComp";
 
+export const COMPOSITION_ID = {
+  "JustMessage": "JustMessage",
+  "ImageSlideshow": "ImageSlideshow",
+}
+
 export const CompositionProps = z.object({
   title: z.string(),
 });

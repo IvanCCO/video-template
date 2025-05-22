@@ -4,7 +4,7 @@ import { Player } from "@remotion/player";
 import type { NextPage } from "next";
 import React, { useMemo, useState } from "react";
 import { Slideshow as ImageSlideshow } from "../remotion/ImageSlideshow/Slideshow";
-import { PhylosoficalEdit as ImageSlideshowTest } from "../remotion/PhylosoficalMessage/PhylosoficalEdit";
+import { JustMessageEdit } from "../remotion/JustMessage/Edit";
 
 import {
   VIDEO_FPS,
@@ -12,16 +12,18 @@ import {
   VIDEO_WIDTH,
 } from "../types/constants";
 import { z } from "zod";
-import { RenderControls } from "../components/RenderControls";
 import { Tips } from "../components/Tips/Tips";
 import { Spacing } from "../components/Spacing";
 import { 
   SlideshowProps, 
   defaultSlideshowProps, 
-  defaultSlideshowPropsTest,
-  SLIDESHOW_DURATION_IN_FRAMES,
-  SLIDESHOW_DURATION_IN_FRAMES_TEST
+  SLIDESHOW_DURATION_IN_FRAMES
 } from "../types/slideshowTypes";
+import {
+  JustMessageProps,
+  defaultJustMessageProps,
+  JUST_MESSAGE_DURATION_IN_FRAMES
+} from "../types/justMessage";
 
 const container: React.CSSProperties = {
   maxWidth: 768,
@@ -67,35 +69,32 @@ const activeButton: React.CSSProperties = {
   fontWeight: "bold",
 };
 
-type TemplateType = "ImageSlideshow" | "ImageSlideshowTest";
+type TemplateType = "ImageSlideshow" | "JustMessage";
 
 const Home: NextPage = () => {
-  const [text, setText] = useState<string>(defaultSlideshowProps.title || "");
   const [template, setTemplate] = useState<TemplateType>("ImageSlideshow");
 
-  const inputProps: z.infer<typeof SlideshowProps> = useMemo(() => {
+  const inputProps = useMemo(() => {
     if (template === "ImageSlideshow") {
       return {
         ...defaultSlideshowProps,
-        title: text,
-      };
+      } as z.infer<typeof SlideshowProps>;
     } else {
       return {
-        ...defaultSlideshowPropsTest,
-        title: text,
-      };
+        ...defaultJustMessageProps,
+      } as z.infer<typeof JustMessageProps>;
     }
-  }, [text, template]);
+  }, [template]);
 
   const SelectedComponent = template === "ImageSlideshow" 
     ? ImageSlideshow 
-    : ImageSlideshowTest;
+    : JustMessageEdit;
     
   // Calculate duration based on selected component
   const componentDuration = useMemo(() => {
     return template === "ImageSlideshow" 
-      ? 20 * VIDEO_FPS // 20 seconds for ImageSlideshow
-      : 10 * VIDEO_FPS; // 10 seconds for ImageSlideshowTest
+      ? SLIDESHOW_DURATION_IN_FRAMES
+      : JUST_MESSAGE_DURATION_IN_FRAMES;
   }, [template]);
 
   return (
@@ -109,15 +108,15 @@ const Home: NextPage = () => {
             Image Slideshow (20s)
           </button>
           <button 
-            style={template === "ImageSlideshowTest" ? activeButton : templateButton}
-            onClick={() => setTemplate("ImageSlideshowTest")}
+            style={template === "JustMessage" ? activeButton : templateButton}
+            onClick={() => setTemplate("JustMessage")}
           >
-            Image Slideshow Test (10s)
+            Philosophical Message (10s)
           </button>
         </div>
         <div className="cinematics" style={outer}>
           <Player
-            component={SelectedComponent}
+            component={SelectedComponent as React.ComponentType<any>}
             inputProps={inputProps}
             durationInFrames={componentDuration}
             fps={VIDEO_FPS}
@@ -130,11 +129,6 @@ const Home: NextPage = () => {
             acknowledgeRemotionLicense
           />
         </div>
-        <RenderControls
-          text={text}
-          setText={setText}
-          inputProps={{ title: text }}
-        ></RenderControls>
         <Spacing></Spacing>
         <Spacing></Spacing>
         <Spacing></Spacing>
