@@ -1,0 +1,53 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Elements of the Video — **“Neon Pulse” Style**
+
+* **Duration:** **12 seconds**
+
+* **Background layer**
+
+  * Fill frame with a **looping, slow-moving neon gradient** (purple ⇄ teal).
+  * Add a gentle **parallax scroll** (vertical, 5 px/sec) to create depth.
+
+* **Mid-ground layer**
+
+  * Drop in **abstract geometric shapes** (triangles, hex rings) at 20 % opacity.
+  * Apply a soft **glow (15 px radius)** and set blend mode to *Screen*.
+
+* **Foreground layer (Content focus)**
+
+  * Place the main clip inside a **rounded-rect mask (88 % width)**.
+  * Surround with a thin **neon stroke** (2 px, animated to pulse from #00FFE1 → #FF00F0 every 2 s).
+  * Add a very light **chromatic aberration** (1 px RGB shift) for cyber feel.
+
+* **Text overlay**
+
+  * Font: **“Satoshi Bold”** (or similar modern sans).
+  * Text color: pure white, 2 px inner shadow + 4 px outer glow (#00FFE1 at 35 % opacity).
+  * Pop each keyword with a **scale-up (1 → 1.15) + slight y-bounce** timed to the beat.
+
+* **Transitions & motion**
+
+  * **Start (0 – 0.5 s):** Quick **RGB glitch flash** → hard cut into first frame.
+  * **Scene changes (every 3 s):** **Swipe-down masked by a neon bar** that crosses the screen.
+  * **End (11 – 12 s):** Foreground clip **zooms out** to 80 % while opacity drops to 0 %; background gradient **fades to black**.
+
+* **Color grading**
+
+  * Global contrast +15 %, saturation +10 %.
+  * Mid-tones pushed toward **cyan**, shadows toward **magenta**.
+  * Apply a slight **bloom** on highlights (threshold 80 %, radius 10 px).
+
+* **Sound & beat syncing**
+
+  * Use an **up-tempo synthwave loop (120 BPM)**.
+  * Trigger subtle **whooshes** on each swipe transition and a **bass hit** on every keyword pop.
+  * Music **ducks to –12 LUFS** for clarity when voice-over is present.
+
+* **CTA (Final 1 s)**
+
+  * Slide-up neon button reading **“Tap for More 🔥”**; button pulses twice.
+  * Quick **echo pop** sound effect on appearance.
