@@ -9,12 +9,16 @@ export const SlidesProps = z.object({
 
 export const defaultSlidesProps: z.infer<typeof SlidesProps> = {
   images: [
-    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
+    'https://videos.pexels.com/video-files/7565439/7565439-hd_1080_1920_25fps.mp4',
+    'https://videos.pexels.com/video-files/7565625/7565625-hd_1080_1920_25fps.mp4',
+    'https://videos.pexels.com/video-files/3694915/3694915-uhd_1440_2560_30fps.mp4',
+    'https://videos.pexels.com/video-files/7565622/7565622-hd_1080_1920_25fps.mp4'
   ],
   texts: [
     'Big Buck Bunny - A short film',
-    'Elephants Dream - Animation masterpiece'
+    'Elephants Dream - Animation masterpiece',
+    'Animation masterpiece',
+    'Animation short film'
   ],
   song: 'https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3',
 };
