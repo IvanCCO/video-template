@@ -5,6 +5,7 @@ import type { NextPage } from "next";
 import React, { useMemo, useState } from "react";
 import { Slideshow as ImageSlideshow } from "../remotion/ImageSlideshow/Slideshow";
 import { JustMessageEdit } from "../remotion/JustMessage/Edit";
+import { SlidesEdit } from "../remotion/Slides/Edit";
 
 import {
   VIDEO_FPS,
@@ -24,6 +25,11 @@ import {
   defaultJustMessageProps,
   JUST_MESSAGE_DURATION_IN_FRAMES
 } from "../types/justMessage";
+import {
+  SlidesProps,
+  defaultSlidesProps,
+  calculateSlidesDuration
+} from "../types/slides";
 
 const container: React.CSSProperties = {
   maxWidth: 768,
@@ -48,6 +54,7 @@ const templateToggle: React.CSSProperties = {
   justifyContent: "center",
   gap: "10px",
   marginBottom: "20px",
+  flexWrap: "wrap",
 };
 
 const templateButton: React.CSSProperties = {
@@ -69,7 +76,7 @@ const activeButton: React.CSSProperties = {
   fontWeight: "bold",
 };
 
-type TemplateType = "ImageSlideshow" | "JustMessage";
+type TemplateType = "ImageSlideshow" | "JustMessage" | "Slides";
 
 const Home: NextPage = () => {
   const [template, setTemplate] = useState<TemplateType>("ImageSlideshow");
@@ -79,22 +86,36 @@ const Home: NextPage = () => {
       return {
         ...defaultSlideshowProps,
       } as z.infer<typeof SlideshowProps>;
-    } else {
+    } else if (template === "JustMessage") {
       return {
         ...defaultJustMessageProps,
       } as z.infer<typeof JustMessageProps>;
+    } else {
+      return {
+        ...defaultSlidesProps,
+      } as z.infer<typeof SlidesProps>;
     }
   }, [template]);
 
-  const SelectedComponent = template === "ImageSlideshow" 
-    ? ImageSlideshow 
-    : JustMessageEdit;
+  const SelectedComponent = useMemo(() => {
+    if (template === "ImageSlideshow") {
+      return ImageSlideshow;
+    } else if (template === "JustMessage") {
+      return JustMessageEdit;
+    } else {
+      return SlidesEdit;
+    }
+  }, [template]);
     
   // Calculate duration based on selected component
   const componentDuration = useMemo(() => {
-    return template === "ImageSlideshow" 
-      ? SLIDESHOW_DURATION_IN_FRAMES
-      : JUST_MESSAGE_DURATION_IN_FRAMES;
+    if (template === "ImageSlideshow") {
+      return SLIDESHOW_DURATION_IN_FRAMES;
+    } else if (template === "JustMessage") {
+      return JUST_MESSAGE_DURATION_IN_FRAMES;
+    } else {
+      return calculateSlidesDuration(defaultSlidesProps.totalDuration);
+    }
   }, [template]);
 
   return (
@@ -112,6 +133,12 @@ const Home: NextPage = () => {
             onClick={() => setTemplate("JustMessage")}
           >
             Philosophical Message (10s)
+          </button>
+          <button 
+            style={template === "Slides" ? activeButton : templateButton}
+            onClick={() => setTemplate("Slides")}
+          >
+            Video Slides ({defaultSlidesProps.totalDuration}s)
           </button>
         </div>
         <div className="cinematics" style={outer}>

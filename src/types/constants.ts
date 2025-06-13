@@ -4,6 +4,7 @@ export const COMP_NAME = "MyComp";
 export const COMPOSITION_ID = {
   "JustMessage": "JustMessage",
   "ImageSlideshow": "ImageSlideshow",
+  "Slides": "Slides",
 }
 
 export const CompositionProps = z.object({

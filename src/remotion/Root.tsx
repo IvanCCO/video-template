@@ -10,7 +10,8 @@ import { Main as SlideshowMain } from "./ImageSlideshow/Main";
 import { defaultSlideshowProps } from "../types/slideshowTypes";
 import { Main as JustMessageMain } from "./JustMessage/Main";
 import { JUST_MESSAGE_DURATION_IN_FRAMES, defaultJustMessageProps } from "../types/justMessage";
-
+import { Main as SlidesMain } from "./Slides/Main";
+import { defaultSlidesProps, calculateSlidesDuration } from "../types/slides";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -32,6 +33,20 @@ export const RemotionRoot: React.FC = () => {
         width={VIDEO_WIDTH}
         height={VIDEO_HEIGHT}
         defaultProps={defaultJustMessageProps}
+      />
+      <Composition
+        id={COMPOSITION_ID.Slides}
+        component={SlidesMain}
+        durationInFrames={calculateSlidesDuration(defaultSlidesProps.totalDuration)}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+        defaultProps={defaultSlidesProps}
+        calculateMetadata={({ props }) => {
+          return {
+            durationInFrames: calculateSlidesDuration(props.totalDuration),
+          };
+        }}
       />
     </>
   );
