@@ -8,7 +8,7 @@ import {
 } from 'remotion';
 import { z } from 'zod';
 import { VIDEO_FPS } from '../../types/constants';
-import { SlidesProps, calculateDurationPerVideo } from '../../types/slides';
+import { SLIDES_DURATION_IN_FRAMES, SlidesProps } from '../../types/slides';
 import { InstagramCTA, VideoWithLayers, TypewriterText, SubscribeButton } from '../../components';
 
 // Transition types for variety
@@ -81,19 +81,20 @@ const Slide: React.FC<SlideProps> = ({ video, text, slideIndex, durationPerVideo
 
 // Props for our inner Slideshow component
 interface InternalSlidesProps {
-  videos: string[];
+  images: string[];
   texts: string[];
   song: string;
-  totalDuration: number;
 }
 
-const InnerSlides: React.FC<InternalSlidesProps> = ({ videos, texts, song, totalDuration }) => {
-  const slideCount = videos.length;
-  const durationPerVideoSeconds = calculateDurationPerVideo(totalDuration, slideCount);
-  const slideFrames = durationPerVideoSeconds * VIDEO_FPS;
-  const contentFrames = slideCount * slideFrames;
+const InnerSlides: React.FC<InternalSlidesProps> = ({ images, texts, song }) => {
+  const slideCount = images.length;
   const instagramCTAFrames = 3 * VIDEO_FPS; // 3 seconds for Instagram CTA
-  const totalFrames = totalDuration * VIDEO_FPS;
+  const totalFrames = SLIDES_DURATION_IN_FRAMES;
+  
+  // Calculate duration per video (5 seconds as specified)
+  const durationPerVideoSeconds = 5;
+  const slideFrames = durationPerVideoSeconds * VIDEO_FPS; // 5 seconds * 30 FPS = 150 frames per slide
+  const contentFrames = slideCount * slideFrames; // Total frames for all video content
 
   // Dynamic transition frames based on video duration
   const transitionFrames = Math.min(6, Math.max(3, slideFrames * 0.1)); // 10% of slide duration for overlap
@@ -101,11 +102,11 @@ const InnerSlides: React.FC<InternalSlidesProps> = ({ videos, texts, song, total
   return (
     <AbsoluteFill style={{ backgroundColor: 'black' }}>
       {/* Background music with higher volume for engagement */}
-      {/* <Audio
+      <Audio
         src={song.startsWith('http') ? song : staticFile(song)}
         endAt={totalFrames}
         volume={0.8} // Increased volume for TikTok appeal
-      /> */}
+      />
 
       <Sequence
         from={contentFrames + instagramCTAFrames}
@@ -115,10 +116,10 @@ const InnerSlides: React.FC<InternalSlidesProps> = ({ videos, texts, song, total
       </Sequence>
 
       {/* Video slides with overlapping transitions */}
-      {videos.map((video, index) => {
+      {images.map((video, index) => {
         const startFrame = index * slideFrames;
         const duration = slideFrames +
-          (index < videos.length - 1 ? transitionFrames : 0);
+          (index < images.length - 1 ? transitionFrames : 0);
 
         return (
           <Sequence
@@ -167,5 +168,7 @@ const InnerSlides: React.FC<InternalSlidesProps> = ({ videos, texts, song, total
 
 // Main Slides component that accepts props defined in slides.ts
 export const SlidesEdit: React.FC<z.infer<typeof SlidesProps>> = (props) => {
-  return <InnerSlides videos={props.videos} texts={props.texts} song={props.song} totalDuration={props.totalDuration} />;
+
+  console.log(props);
+  return <InnerSlides images={props.images} texts={props.texts} song={props.song} />;
 }; 

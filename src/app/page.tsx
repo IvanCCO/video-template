@@ -28,7 +28,7 @@ import {
 import {
   SlidesProps,
   defaultSlidesProps,
-  calculateSlidesDuration
+  SLIDES_DURATION_IN_FRAMES
 } from "../types/slides";
 
 const container: React.CSSProperties = {
@@ -114,7 +114,7 @@ const Home: NextPage = () => {
     } else if (template === "JustMessage") {
       return JUST_MESSAGE_DURATION_IN_FRAMES;
     } else {
-      return calculateSlidesDuration(defaultSlidesProps.totalDuration);
+      return SLIDES_DURATION_IN_FRAMES;
     }
   }, [template]);
 
@@ -138,7 +138,7 @@ const Home: NextPage = () => {
             style={template === "Slides" ? activeButton : templateButton}
             onClick={() => setTemplate("Slides")}
           >
-            Video Slides ({defaultSlidesProps.totalDuration}s)
+            Video Slides (20s)
           </button>
         </div>
         <div className="cinematics" style={outer}>
